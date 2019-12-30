@@ -1,17 +1,13 @@
 import pandas as pd
 from sklearn.decomposition import PCA
-from taigapy import TaigaClient
-tc = TaigaClient()
 
 def load_screens():
     # Load screens
-    screens = tc.get(name='avana-public-tentative-20q1-a9a6', version=3, file='gene_effect').T
+    screens = pd.read_csv('data/gene_effect.csv', index_col=0).T
     screens.index = screens.index.str.split(' ').str.get(0)
     # Map Broad ID to CCLE name
-    cell_lines = tc.get(name='depmap-a0ab', version=6, file='sample_info')
-    cell_lines=cell_lines.loc[:,['DepMap_ID','CCLE Name']]
-    cell_lines=cell_lines.set_index('DepMap_ID')
-    cell_lines=cell_lines.squeeze()
+    cell_lines = pd.read_csv('data/sample_info.csv', index_col='DepMap_ID',
+                             usecols=['DepMap_ID', 'CCLE Name'], squeeze=True)
 
     ## Change names to CCLE IDs
     screens.columns = cell_lines[screens.columns].values

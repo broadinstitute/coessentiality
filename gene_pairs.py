@@ -1,5 +1,6 @@
 import numpy as np, statsmodels.api as sm
 from load_screens import load_screens
+from tqdm import tqdm
 
 # Load batch-corrected screens
 
@@ -11,7 +12,7 @@ genes = screens.index
 cholsigmainv = np.linalg.cholesky(np.linalg.pinv(screens.cov())).T
 GLS_beta = np.empty((len(screens), len(screens)))
 GLS_p = np.empty((len(screens), len(screens)))
-for A_index, A_row in enumerate(screens.values):
+for A_index, A_row in tqdm(enumerate(screens.values)):
     input = cholsigmainv.dot(sm.add_constant(A_row))
     for B_index, B_row in enumerate(screens.values):
         output = cholsigmainv.dot(B_row)
